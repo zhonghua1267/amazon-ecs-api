@@ -1,15 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.malkusch.amazon.product-advertising-api</groupId>
-  <artifactId>amazon-ecs-api</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <name>Amazon's Product Advertising API</name>
-  <description>Amazon's Product Advertising API</description>
-  <dependencies>
-  	<dependency>
-  		<groupId>de.malkusch.amazon.product-advertising-api</groupId>
-  		<artifactId>amazon-ecs-jax</artifactId>
-  		<version>1.0.0</version>
-  	</dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.malkusch.amazon.product-advertising-api</groupId>
+	<artifactId>amazon-ecs-api</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>Amazon's Product Advertising API</name>
+	<description>Amazon's Product Advertising API</description>
+	<packaging>jar</packaging>
+	<url>https://github.com/malkusch/amazon-ecs-api</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git://github.com/malkusch/amazon-ecs-api.git</connection>
+		<url>https://github.com/malkusch/amazon-ecs-api</url>
+	</scm>
+	<developers>
+		<developer>
+			<id>malkusch</id>
+			<name>Markus Malkusch</name>
+			<email>markus@malkusch.de</email>
+		</developer>
+	</developers>
+	<dependencies>
+		<dependency>
+			<groupId>de.malkusch.amazon.product-advertising-api</groupId>
+			<artifactId>amazon-ecs-jax</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
 </project>
