@@ -23,6 +23,18 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.w3c.dom.Node;
 
+/**
+ * SoapHandler for adding the authentication headers to an Amazon Product Advertising API call
+ * 
+ * This SoapHandler generates the signature for the soap call. Amazon's
+ * authentication SOAP headers AWSAccessKeyId, Timestamp and Signature will
+ * be added to the SOAP-request.
+ * 
+ * This class is thread safe.
+ * 
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/NotUsingWSSecurity.html
+ * @author Markus Malkusch <markus@malkusch.de>
+ */
 public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 {
 
@@ -51,6 +63,11 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 		secretKeySpec = new SecretKeySpec(secretKey, SIGN_ALGORITHM);
 	}
 
+	/**
+	 * Add authentication headers to outgoing soap calls.
+	 * 
+	 * This method is thread safe.
+	 */
 	public boolean handleMessage(SOAPMessageContext messagecontext)
 	{
 		try {
@@ -100,11 +117,6 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 		header.addChildElement(new QName(NAMESPACE, name)).addTextNode(value);
 	}
 
-	/**
-	 * Signs as specified by Amazon
-	 * 
-	 * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/NotUsingWSSecurity.html
-	 */
 	private String getSignature(String operation, String timeStamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException
 	{
 		String toSign = operation + timeStamp;
@@ -118,14 +130,17 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 		return DatatypeConverter.printBase64Binary(signBytes);
 	}
 
-	public void close(MessageContext messagecontext) {
+	public void close(MessageContext messagecontext)
+	{
 	}
 
-	public Set<QName> getHeaders() {
+	public Set<QName> getHeaders()
+	{
 		return null;
 	}
 
-	public boolean handleFault(SOAPMessageContext messagecontext) {
+	public boolean handleFault(SOAPMessageContext messagecontext)
+	{
 		return true;
 	}
 	
