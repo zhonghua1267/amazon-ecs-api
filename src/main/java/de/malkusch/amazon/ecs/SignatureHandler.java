@@ -5,6 +5,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -17,11 +18,16 @@ import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.w3c.dom.Node;
+
+import de.malkusch.amazon.ecs.configuration.Authentication;
 
 /**
  * SoapHandler for adding the authentication headers to an Amazon Product Advertising API call
@@ -48,11 +54,16 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 	private SimpleDateFormat dateFormat ;
 	private SecretKeySpec secretKeySpec;
 	
+	public SignatureHandler(Authentication authentication) throws UnsupportedEncodingException
+	{
+		this(authentication.getAccessKey(), authentication.getSecretKey());
+	}
+	
 	public SignatureHandler(String accessKey, String secretKey) throws UnsupportedEncodingException
 	{
 		this(accessKey, secretKey.getBytes("UTF-8"));
 	}
-
+	
 	public SignatureHandler(String accessKey, byte[] secretKey)
 	{
 		this.accessKey = accessKey;
@@ -61,6 +72,18 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
 		secretKeySpec = new SecretKeySpec(secretKey, SIGN_ALGORITHM);
+	}
+	
+	/**
+	 * Appends this handler to a handler chain
+	 */
+	public void appendHandler(BindingProvider provider)
+	{
+		Binding binding = provider.getBinding();
+		@SuppressWarnings("rawtypes")
+		List<Handler> handlerList = binding.getHandlerChain();
+		handlerList.add(this);
+		binding.setHandlerChain(handlerList);
 	}
 
 	/**

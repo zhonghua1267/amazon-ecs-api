@@ -1,5 +1,7 @@
 package de.malkusch.amazon.ecs.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -12,7 +14,6 @@ import org.junit.Test;
 
 import com.ECS.client.jax.AWSECommerceService;
 import com.ECS.client.jax.AWSECommerceServicePortType;
-import com.ECS.client.jax.Item;
 import com.ECS.client.jax.ItemSearch;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
@@ -21,11 +22,11 @@ import com.ECS.client.jax.OperationRequest;
 import de.malkusch.amazon.ecs.SignatureHandler;
 import de.malkusch.amazon.ecs.configuration.PropertiesConfiguration;
 
-public class Sandbox {
+public class TestSignatureHandler {
 
 	private PropertiesConfiguration configuration;
 
-	public Sandbox() throws IOException
+	public TestSignatureHandler() throws IOException
 	{
 		Properties properties = new Properties();
 		properties.load(getClass().getResourceAsStream("/amazon.properties"));
@@ -33,7 +34,7 @@ public class Sandbox {
 	}
 
 	@Test
-	public void test() throws UnsupportedEncodingException
+	public void testAuthenticatedCommunication() throws UnsupportedEncodingException
 	{
 		AWSECommerceService service = new AWSECommerceService();
 
@@ -59,14 +60,8 @@ public class Sandbox {
 				itemSearch.getXMLEscaping(), itemSearch.getValidate(),
 				itemSearch.getShared(), itemSearch.getRequest(),
 				operationRequest, items);
-
 		
-		Items retval = items.value.get(0); // first and only Items element
-		List<Item> item_list = retval.getItem(); // list of Item subelements
-		for (Item item : item_list) {
-			System.out.println(item.getItemAttributes().getTitle());
-
-		}
+		assertTrue(items.value.size() > 0);
 	}
-	
+
 }
