@@ -2,23 +2,16 @@ package de.malkusch.amazon.ecs.test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Properties;
-
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Holder;
 
 import org.junit.Test;
 
 import com.ECS.client.jax.AWSECommerceService;
-import com.ECS.client.jax.AWSECommerceServicePortType;
 import com.ECS.client.jax.Item;
-import com.ECS.client.jax.ItemSearch;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
-import com.ECS.client.jax.OperationRequest;
 
-import de.malkusch.amazon.ecs.SignatureHandler;
+import de.malkusch.amazon.ecs.ProductAvertisingAPI;
 import de.malkusch.amazon.ecs.configuration.PropertiesConfiguration;
 
 public class Sandbox {
@@ -35,35 +28,15 @@ public class Sandbox {
 	@Test
 	public void test() throws UnsupportedEncodingException
 	{
-		AWSECommerceService service = new AWSECommerceService();
-
-		AWSECommerceServicePortType port = service
-				.getAWSECommerceServicePortDE();
-
-		new SignatureHandler(configuration).appendHandler(((BindingProvider) port));
+		ProductAvertisingAPI api = new ProductAvertisingAPI(configuration, new AWSECommerceService().getAWSECommerceServicePortDE());
 
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 		itemSearchRequest.setSearchIndex("Books");
 		itemSearchRequest.setKeywords("Star Wars");
-		itemSearchRequest.getResponseGroup().add("Large");
 
-		ItemSearch itemSearch = new ItemSearch();
-		itemSearch.setAWSAccessKeyId(configuration.getAccessKey());
-		itemSearch.setAssociateTag(configuration.getAssociateTag());
-		itemSearch.getRequest().add(itemSearchRequest);
+		Items items = api.itemSearch(itemSearchRequest);
 		
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Items>> items = new Holder<List<Items>>();
-		port.itemSearch(itemSearch.getMarketplaceDomain(),
-				itemSearch.getAWSAccessKeyId(), itemSearch.getAssociateTag(),
-				itemSearch.getXMLEscaping(), itemSearch.getValidate(),
-				itemSearch.getShared(), itemSearch.getRequest(),
-				operationRequest, items);
-
-		
-		Items retval = items.value.get(0); // first and only Items element
-		List<Item> item_list = retval.getItem(); // list of Item subelements
-		for (Item item : item_list) {
+		for (Item item : items.getItem()) {
 			System.out.println(item.getItemAttributes().getTitle());
 
 		}
