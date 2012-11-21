@@ -1,36 +1,27 @@
 package de.malkusch.amazon.ecs.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Properties;
 
 import org.junit.Test;
 
-import com.ECS.client.jax.AWSECommerceService;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
-import de.malkusch.amazon.ecs.configuration.PropertiesConfiguration;
+import de.malkusch.amazon.ecs.exception.RequestException;
 
-public class TestSignatureHandler {
+public class TestSignatureHandler extends AbstractTest {
 
-	private PropertiesConfiguration configuration;
 
-	public TestSignatureHandler() throws IOException
-	{
-		Properties properties = new Properties();
-		properties.load(getClass().getResourceAsStream("/amazon.properties"));
-		configuration = new PropertiesConfiguration(properties);
+	public TestSignatureHandler() throws IOException {
+		super();
 	}
 
 	@Test
-	public void testAuthenticatedCommunication() throws UnsupportedEncodingException
+	public void testAuthenticatedCommunication() throws UnsupportedEncodingException, RequestException
 	{
-		ProductAvertisingAPI api = new ProductAvertisingAPI(configuration, new AWSECommerceService().getAWSECommerceServicePortDE());
-
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 		itemSearchRequest.setKeywords("Star Wars");
 

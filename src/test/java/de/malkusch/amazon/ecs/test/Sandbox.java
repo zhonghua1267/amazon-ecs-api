@@ -2,34 +2,25 @@ package de.malkusch.amazon.ecs.test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Properties;
 
 import org.junit.Test;
 
-import com.ECS.client.jax.AWSECommerceService;
 import com.ECS.client.jax.Item;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
-import de.malkusch.amazon.ecs.configuration.PropertiesConfiguration;
+import de.malkusch.amazon.ecs.exception.RequestException;
 
-public class Sandbox {
+public class Sandbox extends AbstractTest {
 
-	private PropertiesConfiguration configuration;
 
-	public Sandbox() throws IOException
-	{
-		Properties properties = new Properties();
-		properties.load(getClass().getResourceAsStream("/amazon.properties"));
-		configuration = new PropertiesConfiguration(properties);
+	public Sandbox() throws IOException {
+		super();
 	}
 
 	@Test
-	public void test() throws UnsupportedEncodingException
+	public void test() throws UnsupportedEncodingException, RequestException
 	{
-		ProductAvertisingAPI api = new ProductAvertisingAPI(configuration, new AWSECommerceService().getAWSECommerceServicePortDE());
-
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 		itemSearchRequest.setSearchIndex("Books");
 		itemSearchRequest.setKeywords("Star Wars");
