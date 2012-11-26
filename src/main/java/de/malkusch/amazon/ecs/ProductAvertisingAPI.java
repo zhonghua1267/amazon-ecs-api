@@ -17,6 +17,8 @@ import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.Cart;
 import com.ECS.client.jax.CartAdd;
 import com.ECS.client.jax.CartAddRequest;
+import com.ECS.client.jax.CartClear;
+import com.ECS.client.jax.CartClearRequest;
 import com.ECS.client.jax.CartCreate;
 import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.CartGet;
@@ -127,6 +129,43 @@ public class ProductAvertisingAPI {
 
 	public AWSECommerceServicePortType getPort() {
 		return port;
+	}
+	
+	public CartClearRequest buildCartClearRequest(Cart cart) {
+		CartClearRequest request = new CartClearRequest();
+		request.setHMAC(cart.getHMAC());
+		request.setCartId(cart.getCartId());
+		return request;
+	}
+	
+	public CartClear buildCartClear() {
+		CartClear clear = new CartClear();
+		clear.setAssociateTag(configuration.getAssociateTag());
+		clear.setAWSAccessKeyId(configuration.getAccessKey());
+		return clear;
+	}
+	
+	public CartClear buildCartClear(CartClearRequest request) {
+		CartClear clear = buildCartClear();
+		clear.getRequest().add(request);
+		return clear;
+	}
+	
+	public List<Cart> cartClear(CartClear cartClear) {
+		Holder<OperationRequest> operationRequest = null;
+		Holder<List<Cart>> cart = new Holder<List<Cart>>();
+		port.cartClear(cartClear.getMarketplaceDomain(),
+				cartClear.getAWSAccessKeyId(), cartClear.getAssociateTag(),
+				cartClear.getValidate(), cartClear.getXMLEscaping(),
+				cartClear.getShared(), cartClear.getRequest(), operationRequest,
+				cart);
+		return cart.value;
+	}
+	
+	public Cart cartClear(CartClearRequest request) throws RequestException {
+		Cart cart = cartClear(buildCartClear(request)).get(0);
+		validateResponse(cart.getRequest());
+		return cart;
 	}
 	
 	public CartAddRequest buildCartAddRequest(Cart cart) {

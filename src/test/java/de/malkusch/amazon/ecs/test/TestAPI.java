@@ -11,6 +11,7 @@ import com.ECS.client.jax.BrowseNodeLookupRequest;
 import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.Cart;
 import com.ECS.client.jax.CartAddRequest;
+import com.ECS.client.jax.CartClearRequest;
 import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.CartGetRequest;
 import com.ECS.client.jax.CartModifyRequest;
@@ -243,5 +244,36 @@ public class TestAPI extends AbstractTest {
 		assertEquals(2, addedCart.getCartItems().getCartItem().size());
 		assertEquals("3831019592", addedCart.getCartItems().getCartItem().get(0).getASIN());
 	}
+	
+	@Test(expected = RequestException.class)
+	public void testFailCartClear() throws RequestException {
+		CartClearRequest request = new CartClearRequest();
+
+		api.cartClear(request);
+	}
+	
+	@Test
+	public void testCartClear() throws RequestException {
+		Cart createdCart = null;
+		{
+			CartCreateRequest request = new CartCreateRequest();
+
+			CartCreateRequest.Items items = new CartCreateRequest.Items();
+			request.setItems(items);
+
+			Item item = new Item();
+			item.setASIN("383102037X");
+			item.setQuantity(BigInteger.valueOf(3));
+			items.getItem().add(item);
+
+			createdCart = api.cartCreate(request);
+		}
+
+		CartClearRequest request = api.buildCartClearRequest(createdCart);
+		Cart clearedCart = api.cartClear(request);
+		
+		assertNull(clearedCart.getCartItems());
+	}
+	
 
 }
