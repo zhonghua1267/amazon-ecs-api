@@ -15,6 +15,8 @@ import com.ECS.client.jax.BrowseNodeLookup;
 import com.ECS.client.jax.BrowseNodeLookupRequest;
 import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.Cart;
+import com.ECS.client.jax.CartAdd;
+import com.ECS.client.jax.CartAddRequest;
 import com.ECS.client.jax.CartCreate;
 import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.CartGet;
@@ -125,6 +127,43 @@ public class ProductAvertisingAPI {
 
 	public AWSECommerceServicePortType getPort() {
 		return port;
+	}
+	
+	public CartAddRequest buildCartAddRequest(Cart cart) {
+		CartAddRequest request = new CartAddRequest();
+		request.setHMAC(cart.getHMAC());
+		request.setCartId(cart.getCartId());
+		return request;
+	}
+	
+	public CartAdd buildCartAdd() {
+		CartAdd add = new CartAdd();
+		add.setAssociateTag(configuration.getAssociateTag());
+		add.setAWSAccessKeyId(configuration.getAccessKey());
+		return add;
+	}
+	
+	public CartAdd buildCartAdd(CartAddRequest request) {
+		CartAdd add = buildCartAdd();
+		add.getRequest().add(request);
+		return add;
+	}
+	
+	public List<Cart> cartAdd(CartAdd cartAdd) {
+		Holder<OperationRequest> operationRequest = null;
+		Holder<List<Cart>> cart = new Holder<List<Cart>>();
+		port.cartAdd(cartAdd.getMarketplaceDomain(),
+				cartAdd.getAWSAccessKeyId(), cartAdd.getAssociateTag(),
+				cartAdd.getValidate(), cartAdd.getXMLEscaping(),
+				cartAdd.getShared(), cartAdd.getRequest(), operationRequest,
+				cart);
+		return cart.value;
+	}
+	
+	public Cart cartAdd(CartAddRequest request) throws RequestException {
+		Cart cart = cartAdd(buildCartAdd(request)).get(0);
+		validateResponse(cart.getRequest());
+		return cart;
 	}
 	
 	public CartModifyRequest buildCartModifyRequest(Cart cart) {
