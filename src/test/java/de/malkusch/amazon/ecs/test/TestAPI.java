@@ -11,6 +11,7 @@ import com.ECS.client.jax.BrowseNodeLookupRequest;
 import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.Cart;
 import com.ECS.client.jax.CartCreateRequest;
+import com.ECS.client.jax.CartGetRequest;
 import com.ECS.client.jax.ItemLookupRequest;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
@@ -84,7 +85,6 @@ public class TestAPI extends AbstractTest {
 		assertEquals(request.getBrowseNodeId().get(0), nodes.getBrowseNode().get(0).getBrowseNodeId());
 	}
 	
-
 	@Test(expected=RequestException.class)
 	public void testFailCartCreate() throws RequestException
 	{
@@ -109,6 +109,44 @@ public class TestAPI extends AbstractTest {
 		Cart cart = api.cartCreate(request);
 		
 		assertNotNull(cart.getPurchaseURL());
+	}
+	
+	@Test(expected=RequestException.class)
+	public void testFailCartGet() throws RequestException
+	{
+		CartGetRequest request = new CartGetRequest();
+		
+		api.cartGet(request);
+	}
+	
+	@Test
+	public void testCartGet() throws RequestException {
+		Cart createdCart = null;
+		{
+			CartCreateRequest request = new CartCreateRequest();
+			
+			CartCreateRequest.Items items = new CartCreateRequest.Items();
+			request.setItems(items);
+			
+			Item item = new Item();
+			items.getItem().add(item);
+			
+			item.setASIN("383102037X");
+			item.setQuantity(BigInteger.valueOf(1));
+			
+			createdCart = api.cartCreate(request);
+		}
+		
+		CartGetRequest request = api.buildCartGetRequest(createdCart);
+		
+		Cart cart = api.cartGet(request);
+		
+		assertEquals(createdCart.getCartId(), cart.getCartId());
+		assertTrue(cart.getCartItems().getCartItem().size() == 1);
+		assertEquals(
+			createdCart.getCartItems().getCartItem().get(0).getASIN(),
+			cart.getCartItems().getCartItem().get(0).getASIN()
+		);
 	}
 
 }
