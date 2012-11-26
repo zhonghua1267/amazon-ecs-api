@@ -11,6 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.ECS.client.jax.AWSECommerceService;
 import com.ECS.client.jax.AWSECommerceServicePortType;
+import com.ECS.client.jax.BrowseNodeLookup;
+import com.ECS.client.jax.BrowseNodeLookupRequest;
+import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.Errors;
 import com.ECS.client.jax.Errors.Error;
 import com.ECS.client.jax.ItemLookup;
@@ -27,8 +30,10 @@ import de.malkusch.amazon.ecs.exception.RequestException;
 /**
  * 
  * @author Markus Malkusch <markus@malkusch.de>
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/APPNDX_SearchIndexValues.html
+ * @see http 
+ *      ://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/
+ *      APPNDX_SearchIndexValues.html
  */
 public class ProductAvertisingAPI {
 
@@ -52,17 +57,26 @@ public class ProductAvertisingAPI {
 		final public static String TRUE = "True";
 		final public static String FALSE = "False";
 	}
-	
+
 	static final public class MerchantId {
 		final public static String AMAZON = "Amazon";
 	}
-	
+
 	static final public class ResponseGroup {
+
+		static final public class BrowseNode {
+			final public static String BROWSE_NODE_INFO = "BrowseNodeInfo";
+			final public static String MOST_GIFTED = "MostGifted";
+			final public static String NEW_RELEASES = "NewReleases";
+			final public static String MOST_WISHED_FOR = "MostWishedFor";
+			final public static String TOP_SELLERS = "TopSellers";
+		}
+
 		final public static String ACCESSORIES = "Accessories";
 		final public static String BROWSE_NODES = "BrowseNodes";
 		final public static String EDITORTIAL_REVIEW = "EditorialReview";
 		final public static String IMAGES = "Images";
-		final public static String ITEM_ATTRIBUTES= "ItemAttributes";
+		final public static String ITEM_ATTRIBUTES = "ItemAttributes";
 		final public static String ITEM_IDS = "ItemIds";
 		final public static String LARGE = "Large";
 		final public static String MEDIUM = "Medium";
@@ -79,7 +93,7 @@ public class ProductAvertisingAPI {
 		final public static String VARIATIONS = "Variations";
 		final public static String VARIATION_SUMMARY = "VariationSummary";
 	}
-	
+
 	private AWSECommerceServicePortType port;
 
 	private Configuration configuration;
@@ -106,6 +120,42 @@ public class ProductAvertisingAPI {
 
 	public AWSECommerceServicePortType getPort() {
 		return port;
+	}
+
+	public BrowseNodeLookup buildBrowseNodeLookup() {
+		BrowseNodeLookup lookup = new BrowseNodeLookup();
+		lookup.setAWSAccessKeyId(configuration.getAccessKey());
+		lookup.setAssociateTag(configuration.getAssociateTag());
+		return lookup;
+	}
+
+	public BrowseNodeLookup buildBrowseNodeLookup(
+			BrowseNodeLookupRequest request) {
+		BrowseNodeLookup lookup = buildBrowseNodeLookup();
+		lookup.getRequest().add(request);
+		return lookup;
+	}
+
+	public List<BrowseNodes> browseNodeLookup(BrowseNodeLookup lookup) {
+		Holder<OperationRequest> operationRequest = null;
+		Holder<List<BrowseNodes>> nodes = new Holder<List<BrowseNodes>>();
+		port.browseNodeLookup(lookup.getMarketplaceDomain(),
+				lookup.getAWSAccessKeyId(), lookup.getAssociateTag(),
+				lookup.getValidate(), lookup.getXMLEscaping(),
+				lookup.getShared(), lookup.getRequest(), operationRequest,
+				nodes);
+		return nodes.value;
+	}
+	
+	public BrowseNodes browseNodeLookup(BrowseNodeLookupRequest request) throws RequestException {
+		List<BrowseNodes> browseNodeLookup = browseNodeLookup(buildBrowseNodeLookup(request));
+		if (browseNodeLookup.isEmpty()) {
+			return null;
+			
+		}
+		BrowseNodes nodes = browseNodeLookup.get(0);
+		validateResponse(nodes.getRequest());
+		return nodes;
 	}
 
 	public ItemLookup buildItemLookup() {

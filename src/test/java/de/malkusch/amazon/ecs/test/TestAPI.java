@@ -1,11 +1,13 @@
 package de.malkusch.amazon.ecs.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
+import com.ECS.client.jax.BrowseNodeLookupRequest;
+import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.ItemLookupRequest;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
@@ -56,6 +58,26 @@ public class TestAPI extends AbstractTest {
 		ItemLookupRequest request = new ItemLookupRequest();
 		
 		api.itemLookup(request);
+	}
+	
+	@Test(expected=RequestException.class)
+	public void testFailBrowseNodeLookup() throws RequestException
+	{
+		BrowseNodeLookupRequest request = new BrowseNodeLookupRequest();
+		
+		api.browseNodeLookup(request);
+	}
+	
+	@Test
+	public void testBrowseNodeLookup() throws RequestException
+	{
+		BrowseNodeLookupRequest request = new BrowseNodeLookupRequest();
+		request.getBrowseNodeId().add("78689031");
+		
+		BrowseNodes nodes = api.browseNodeLookup(request);
+		
+		assertTrue(nodes.getBrowseNode().size() == 1);
+		assertEquals(request.getBrowseNodeId().get(0), nodes.getBrowseNode().get(0).getBrowseNodeId());
 	}
 
 }
