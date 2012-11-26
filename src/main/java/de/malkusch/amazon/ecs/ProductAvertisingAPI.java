@@ -34,6 +34,8 @@ import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
 import com.ECS.client.jax.OperationRequest;
 import com.ECS.client.jax.Request;
+import com.ECS.client.jax.SimilarityLookup;
+import com.ECS.client.jax.SimilarityLookupRequest;
 
 import de.malkusch.amazon.ecs.configuration.Configuration;
 import de.malkusch.amazon.ecs.exception.RequestException;
@@ -372,6 +374,36 @@ public class ProductAvertisingAPI {
 				lookup.getShared(), lookup.getRequest(), operationRequest,
 				items);
 		return items.value;
+	}
+	
+	public SimilarityLookup buildSimilarityLookup() {
+		SimilarityLookup lookup = new SimilarityLookup();
+		lookup.setAWSAccessKeyId(configuration.getAccessKey());
+		lookup.setAssociateTag(configuration.getAssociateTag());
+		return lookup;
+	}
+	
+	public SimilarityLookup buildSimilarityLookup(SimilarityLookupRequest request) {
+		SimilarityLookup lookup = buildSimilarityLookup();
+		lookup.getRequest().add(request);
+		return lookup;
+	}
+	
+	public List<Items> similarityLookup(SimilarityLookup similarityLookup) {
+		Holder<OperationRequest> operationRequest = null;
+		Holder<List<Items>> items = new Holder<List<Items>>();
+		port.similarityLookup(similarityLookup.getMarketplaceDomain(),
+				similarityLookup.getAWSAccessKeyId(), similarityLookup.getAssociateTag(),
+				similarityLookup.getXMLEscaping(), similarityLookup.getValidate(),
+				similarityLookup.getShared(), similarityLookup.getRequest(),
+				operationRequest, items);
+		return items.value;
+	}
+	
+	public Items similarityLookup(SimilarityLookupRequest request) throws RequestException {
+		Items items = similarityLookup(buildSimilarityLookup(request)).get(0);
+		validateResponse(items.getRequest());
+		return items;
 	}
 
 	public ItemSearch buildItemSearch() {

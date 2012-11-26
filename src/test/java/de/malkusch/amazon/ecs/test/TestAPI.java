@@ -1,6 +1,9 @@
 package de.malkusch.amazon.ecs.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -13,12 +16,13 @@ import com.ECS.client.jax.Cart;
 import com.ECS.client.jax.CartAddRequest;
 import com.ECS.client.jax.CartClearRequest;
 import com.ECS.client.jax.CartCreateRequest;
+import com.ECS.client.jax.CartCreateRequest.Items.Item;
 import com.ECS.client.jax.CartGetRequest;
 import com.ECS.client.jax.CartModifyRequest;
 import com.ECS.client.jax.ItemLookupRequest;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
-import com.ECS.client.jax.CartCreateRequest.Items.Item;
+import com.ECS.client.jax.SimilarityLookupRequest;
 
 import de.malkusch.amazon.ecs.exception.RequestException;
 
@@ -274,6 +278,22 @@ public class TestAPI extends AbstractTest {
 		
 		assertNull(clearedCart.getCartItems());
 	}
+
+	@Test(expected = RequestException.class)
+	public void testFailSimilarityLookup() throws RequestException {
+		SimilarityLookupRequest lookup = new SimilarityLookupRequest();
+
+		api.similarityLookup(lookup);
+	}
 	
+	@Test()
+	public void testSimilarityLookup() throws RequestException {
+		SimilarityLookupRequest lookup = new SimilarityLookupRequest();
+		lookup.getItemId().add("383102037X");
+		
+		Items items = api.similarityLookup(lookup);
+		
+		assertTrue(! items.getItem().isEmpty());
+	}
 
 }
