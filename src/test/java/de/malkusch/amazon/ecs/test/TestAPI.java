@@ -1,11 +1,12 @@
 package de.malkusch.amazon.ecs.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
+import com.ECS.client.jax.ItemLookupRequest;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
 
@@ -36,6 +37,25 @@ public class TestAPI extends AbstractTest {
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 
 		api.itemSearch(itemSearchRequest);
+	}
+	
+	@Test
+	public void testItemLookup() throws RequestException
+	{
+		ItemLookupRequest request = new ItemLookupRequest();
+		request.getItemId().add("383102037X");
+		
+		Items items = api.itemLookup(request);
+		
+		assertTrue(items.getItem().size() == 1);
+	}
+	
+	@Test(expected=RequestException.class)
+	public void testFailItemLookup() throws RequestException
+	{
+		ItemLookupRequest request = new ItemLookupRequest();
+		
+		api.itemLookup(request);
 	}
 
 }
