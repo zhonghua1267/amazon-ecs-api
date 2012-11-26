@@ -12,6 +12,7 @@ import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.Cart;
 import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.CartGetRequest;
+import com.ECS.client.jax.CartModifyRequest;
 import com.ECS.client.jax.ItemLookupRequest;
 import com.ECS.client.jax.ItemSearchRequest;
 import com.ECS.client.jax.Items;
@@ -21,132 +22,187 @@ import de.malkusch.amazon.ecs.exception.RequestException;
 
 public class TestAPI extends AbstractTest {
 
-	
 	public TestAPI() throws IOException {
 		super();
 	}
-	
+
 	@Test
-	public void testItemSearch() throws RequestException
-	{
+	public void testItemSearch() throws RequestException {
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 		itemSearchRequest.setSearchIndex("Books");
 		itemSearchRequest.setKeywords("Star Wars");
 
 		Items items = api.itemSearch(itemSearchRequest);
-		
+
 		assertTrue(items.getItem().size() > 0);
 	}
 
-	@Test(expected=RequestException.class)
-	public void testFailItemSearch() throws RequestException
-	{
+	@Test(expected = RequestException.class)
+	public void testFailItemSearch() throws RequestException {
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 
 		api.itemSearch(itemSearchRequest);
 	}
-	
+
 	@Test
-	public void testItemLookup() throws RequestException
-	{
+	public void testItemLookup() throws RequestException {
 		ItemLookupRequest request = new ItemLookupRequest();
 		request.getItemId().add("383102037X");
-		
+
 		Items items = api.itemLookup(request);
-		
+
 		assertTrue(items.getItem().size() == 1);
 	}
-	
-	@Test(expected=RequestException.class)
-	public void testFailItemLookup() throws RequestException
-	{
+
+	@Test(expected = RequestException.class)
+	public void testFailItemLookup() throws RequestException {
 		ItemLookupRequest request = new ItemLookupRequest();
-		
+
 		api.itemLookup(request);
 	}
-	
-	@Test(expected=RequestException.class)
-	public void testFailBrowseNodeLookup() throws RequestException
-	{
+
+	@Test(expected = RequestException.class)
+	public void testFailBrowseNodeLookup() throws RequestException {
 		BrowseNodeLookupRequest request = new BrowseNodeLookupRequest();
-		
+
 		api.browseNodeLookup(request);
 	}
-	
+
 	@Test
-	public void testBrowseNodeLookup() throws RequestException
-	{
+	public void testBrowseNodeLookup() throws RequestException {
 		BrowseNodeLookupRequest request = new BrowseNodeLookupRequest();
 		request.getBrowseNodeId().add("78689031");
-		
+
 		BrowseNodes nodes = api.browseNodeLookup(request);
-		
+
 		assertTrue(nodes.getBrowseNode().size() == 1);
-		assertEquals(request.getBrowseNodeId().get(0), nodes.getBrowseNode().get(0).getBrowseNodeId());
+		assertEquals(request.getBrowseNodeId().get(0), nodes.getBrowseNode()
+				.get(0).getBrowseNodeId());
 	}
-	
-	@Test(expected=RequestException.class)
-	public void testFailCartCreate() throws RequestException
-	{
+
+	@Test(expected = RequestException.class)
+	public void testFailCartCreate() throws RequestException {
 		CartCreateRequest request = new CartCreateRequest();
-		
+
 		api.cartCreate(request);
 	}
-	
+
 	@Test
 	public void testCartCreate() throws RequestException {
 		CartCreateRequest request = new CartCreateRequest();
-		
+
 		CartCreateRequest.Items items = new CartCreateRequest.Items();
 		request.setItems(items);
-		
+
 		Item item = new Item();
 		items.getItem().add(item);
-		
+
 		item.setASIN("383102037X");
 		item.setQuantity(BigInteger.valueOf(1));
-		
+
 		Cart cart = api.cartCreate(request);
-		
+
 		assertNotNull(cart.getPurchaseURL());
 	}
-	
-	@Test(expected=RequestException.class)
-	public void testFailCartGet() throws RequestException
-	{
+
+	@Test(expected = RequestException.class)
+	public void testFailCartGet() throws RequestException {
 		CartGetRequest request = new CartGetRequest();
-		
+
 		api.cartGet(request);
 	}
-	
+
 	@Test
 	public void testCartGet() throws RequestException {
 		Cart createdCart = null;
 		{
 			CartCreateRequest request = new CartCreateRequest();
-			
+
 			CartCreateRequest.Items items = new CartCreateRequest.Items();
 			request.setItems(items);
-			
+
 			Item item = new Item();
 			items.getItem().add(item);
-			
+
 			item.setASIN("383102037X");
 			item.setQuantity(BigInteger.valueOf(1));
-			
+
 			createdCart = api.cartCreate(request);
 		}
-		
-		CartGetRequest request = api.buildCartGetRequest(createdCart);
-		
-		Cart cart = api.cartGet(request);
-		
+
+		Cart cart = api.cartGet(createdCart);
+
 		assertEquals(createdCart.getCartId(), cart.getCartId());
 		assertTrue(cart.getCartItems().getCartItem().size() == 1);
-		assertEquals(
-			createdCart.getCartItems().getCartItem().get(0).getASIN(),
-			cart.getCartItems().getCartItem().get(0).getASIN()
-		);
+		assertEquals(createdCart.getCartItems().getCartItem().get(0).getASIN(),
+				cart.getCartItems().getCartItem().get(0).getASIN());
+	}
+
+	@Test(expected = RequestException.class)
+	public void testFailCartModify() throws RequestException {
+		CartModifyRequest request = new CartModifyRequest();
+
+		api.cartModify(request);
+	}
+
+	@Test
+	public void testCartModify() throws RequestException {
+		Cart createdCart = null;
+		{
+			CartCreateRequest request = new CartCreateRequest();
+
+			CartCreateRequest.Items items = new CartCreateRequest.Items();
+			request.setItems(items);
+
+			String[] asins = new String[] { "383102037X", "3831019592",
+					"3831091005", "3442380456", "3831020612", "3831018324",
+					"3833222476" };
+			for (String asin : asins) {
+				Item item = new Item();
+				item.setASIN(asin);
+				item.setQuantity(BigInteger.valueOf(3));
+				items.getItem().add(item);
+
+			}
+
+			createdCart = api.cartCreate(request);
+		}
+
+		CartModifyRequest request = api.buildCartModifyRequest(createdCart);
+		request.setItems(new CartModifyRequest.Items());
+
+		// decrease
+		CartModifyRequest.Items.Item decreasedItem = new CartModifyRequest.Items.Item();
+		decreasedItem.setCartItemId(createdCart.getCartItems().getCartItem()
+				.get(0).getCartItemId());
+		decreasedItem.setQuantity(BigInteger.valueOf(2));
+		request.getItems().getItem().add(decreasedItem);
+
+		// increase
+		CartModifyRequest.Items.Item increasedItem = new CartModifyRequest.Items.Item();
+		increasedItem.setCartItemId(createdCart.getCartItems().getCartItem()
+				.get(1).getCartItemId());
+		increasedItem.setQuantity(BigInteger.valueOf(4));
+		request.getItems().getItem().add(increasedItem);
+
+		// remove
+		CartModifyRequest.Items.Item removedItem = new CartModifyRequest.Items.Item();
+		removedItem.setCartItemId(createdCart.getCartItems().getCartItem()
+				.get(2).getCartItemId());
+		removedItem.setQuantity(BigInteger.valueOf(0));
+		request.getItems().getItem().add(removedItem);
+
+		Cart modifiedCart = api.cartModify(request);
+
+		assertEquals("2", modifiedCart.getCartItems()
+				.getCartItem().get(0).getQuantity());
+		assertEquals("4", modifiedCart.getCartItems()
+				.getCartItem().get(1).getQuantity());
+		assertEquals(createdCart.getCartItems().getCartItem().get(3)
+				.getCartItemId(), modifiedCart.getCartItems().getCartItem()
+				.get(2).getCartItemId());
+		assertEquals(createdCart.getCartItems().getCartItem().size() - 1,
+				modifiedCart.getCartItems().getCartItem().size());
 	}
 
 }

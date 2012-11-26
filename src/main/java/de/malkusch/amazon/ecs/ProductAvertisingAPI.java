@@ -19,6 +19,8 @@ import com.ECS.client.jax.CartCreate;
 import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.CartGet;
 import com.ECS.client.jax.CartGetRequest;
+import com.ECS.client.jax.CartModify;
+import com.ECS.client.jax.CartModifyRequest;
 import com.ECS.client.jax.Errors;
 import com.ECS.client.jax.Errors.Error;
 import com.ECS.client.jax.ItemLookup;
@@ -125,6 +127,43 @@ public class ProductAvertisingAPI {
 		return port;
 	}
 	
+	public CartModifyRequest buildCartModifyRequest(Cart cart) {
+		CartModifyRequest request = new CartModifyRequest();
+		request.setHMAC(cart.getHMAC());
+		request.setCartId(cart.getCartId());
+		return request;
+	}
+	
+	public CartModify buildCartModify() {
+		CartModify modify = new CartModify();
+		modify.setAssociateTag(configuration.getAssociateTag());
+		modify.setAWSAccessKeyId(configuration.getAccessKey());
+		return modify;
+	}
+	
+	public CartModify buildCartModify(CartModifyRequest request) {
+		CartModify modify = buildCartModify();
+		modify.getRequest().add(request);
+		return modify;
+	}
+	
+	public List<Cart> cartModify(CartModify cartModify) {
+		Holder<OperationRequest> operationRequest = null;
+		Holder<List<Cart>> cart = new Holder<List<Cart>>();
+		port.cartModify(cartModify.getMarketplaceDomain(),
+				cartModify.getAWSAccessKeyId(), cartModify.getAssociateTag(),
+				cartModify.getValidate(), cartModify.getXMLEscaping(),
+				cartModify.getShared(), cartModify.getRequest(), operationRequest,
+				cart);
+		return cart.value;
+	}
+	
+	public Cart cartModify(CartModifyRequest request) throws RequestException {
+		Cart cart = cartModify(buildCartModify(request)).get(0);
+		validateResponse(cart.getRequest());
+		return cart;
+	}
+	
 	public CartGet buildCartGet() {
 		CartGet get = new CartGet();
 		get.setAssociateTag(configuration.getAssociateTag());
@@ -154,6 +193,10 @@ public class ProductAvertisingAPI {
 				cartGet.getShared(), cartGet.getRequest(), operationRequest,
 				cart);
 		return cart.value;
+	}
+	
+	public Cart cartGet(Cart cart) throws RequestException {
+		return cartGet(buildCartGetRequest(cart));
 	}
 	
 	public Cart cartGet(CartGetRequest request) throws RequestException {
