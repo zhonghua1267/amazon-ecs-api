@@ -14,6 +14,9 @@ import com.ECS.client.jax.AWSECommerceServicePortType;
 import com.ECS.client.jax.BrowseNodeLookup;
 import com.ECS.client.jax.BrowseNodeLookupRequest;
 import com.ECS.client.jax.BrowseNodes;
+import com.ECS.client.jax.Cart;
+import com.ECS.client.jax.CartCreate;
+import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.Errors;
 import com.ECS.client.jax.Errors.Error;
 import com.ECS.client.jax.ItemLookup;
@@ -30,10 +33,8 @@ import de.malkusch.amazon.ecs.exception.RequestException;
 /**
  * 
  * @author Markus Malkusch <markus@malkusch.de>
- * @see http 
- *      ://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/
- *      APPNDX_SearchIndexValues.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/APPNDX_SearchIndexValues.html
  */
 public class ProductAvertisingAPI {
 
@@ -121,6 +122,36 @@ public class ProductAvertisingAPI {
 	public AWSECommerceServicePortType getPort() {
 		return port;
 	}
+	
+	public CartCreate buildCartCreate() {
+		CartCreate cartCreate = new CartCreate();
+		cartCreate.setAssociateTag(configuration.getAssociateTag());
+		cartCreate.setAWSAccessKeyId(configuration.getAccessKey());
+		return cartCreate;
+	}
+	
+	public CartCreate buildCartCreate(CartCreateRequest request) {
+		CartCreate cartCreate = buildCartCreate();
+		cartCreate.getRequest().add(request);
+		return cartCreate;
+	}
+	
+	public List<Cart> cartCreate(CartCreate cartCreate) {
+		Holder<OperationRequest> operationRequest = null;
+		Holder<List<Cart>> cart = new Holder<List<Cart>>();
+		port.cartCreate(cartCreate.getMarketplaceDomain(),
+				cartCreate.getAWSAccessKeyId(), cartCreate.getAssociateTag(),
+				cartCreate.getValidate(), cartCreate.getXMLEscaping(),
+				cartCreate.getShared(), cartCreate.getRequest(), operationRequest,
+				cart);
+		return cart.value;
+	}
+	
+	public Cart cartCreate(CartCreateRequest request) throws RequestException {
+		Cart cart = cartCreate(buildCartCreate(request)).get(0);
+		validateResponse(cart.getRequest());
+		return cart;
+	}
 
 	public BrowseNodeLookup buildBrowseNodeLookup() {
 		BrowseNodeLookup lookup = new BrowseNodeLookup();
@@ -148,12 +179,7 @@ public class ProductAvertisingAPI {
 	}
 	
 	public BrowseNodes browseNodeLookup(BrowseNodeLookupRequest request) throws RequestException {
-		List<BrowseNodes> browseNodeLookup = browseNodeLookup(buildBrowseNodeLookup(request));
-		if (browseNodeLookup.isEmpty()) {
-			return null;
-			
-		}
-		BrowseNodes nodes = browseNodeLookup.get(0);
+		BrowseNodes nodes = browseNodeLookup(buildBrowseNodeLookup(request)).get(0);
 		validateResponse(nodes.getRequest());
 		return nodes;
 	}
