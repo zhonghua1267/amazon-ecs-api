@@ -25,7 +25,7 @@ public class TestSignatureHandler extends AbstractTest {
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 		itemSearchRequest.setKeywords("Star Wars");
 
-		Items items = api.itemSearch(itemSearchRequest);
+		Items items = api.getItemSearch().call(itemSearchRequest);
 		
 		assertEquals("True", items.getRequest().getIsValid());
 	}

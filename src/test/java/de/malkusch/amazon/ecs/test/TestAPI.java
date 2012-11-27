@@ -38,7 +38,7 @@ public class TestAPI extends AbstractTest {
 		itemSearchRequest.setSearchIndex("Books");
 		itemSearchRequest.setKeywords("Star Wars");
 
-		Items items = api.itemSearch(itemSearchRequest);
+		Items items = api.getItemSearch().call(itemSearchRequest);
 
 		assertTrue(items.getItem().size() > 0);
 	}
@@ -47,7 +47,7 @@ public class TestAPI extends AbstractTest {
 	public void testFailItemSearch() throws RequestException {
 		ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
 
-		api.itemSearch(itemSearchRequest);
+		api.getItemSearch().call(itemSearchRequest);
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class TestAPI extends AbstractTest {
 		ItemLookupRequest request = new ItemLookupRequest();
 		request.getItemId().add("383102037X");
 
-		Items items = api.itemLookup(request);
+		Items items = api.getItemLookup().call(request);
 
 		assertTrue(items.getItem().size() == 1);
 	}
@@ -64,14 +64,14 @@ public class TestAPI extends AbstractTest {
 	public void testFailItemLookup() throws RequestException {
 		ItemLookupRequest request = new ItemLookupRequest();
 
-		api.itemLookup(request);
+		api.getItemLookup().call(request);
 	}
 
 	@Test(expected = RequestException.class)
 	public void testFailBrowseNodeLookup() throws RequestException {
 		BrowseNodeLookupRequest request = new BrowseNodeLookupRequest();
 
-		api.browseNodeLookup(request);
+		api.getBrowseNodeLookup().call(request);
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class TestAPI extends AbstractTest {
 		BrowseNodeLookupRequest request = new BrowseNodeLookupRequest();
 		request.getBrowseNodeId().add("78689031");
 
-		BrowseNodes nodes = api.browseNodeLookup(request);
+		BrowseNodes nodes = api.getBrowseNodeLookup().call(request);
 
 		assertTrue(nodes.getBrowseNode().size() == 1);
 		assertEquals(request.getBrowseNodeId().get(0), nodes.getBrowseNode()
@@ -90,7 +90,7 @@ public class TestAPI extends AbstractTest {
 	public void testFailCartCreate() throws RequestException {
 		CartCreateRequest request = new CartCreateRequest();
 
-		api.cartCreate(request);
+		api.getCartCreate().call(request);
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class TestAPI extends AbstractTest {
 		item.setASIN("383102037X");
 		item.setQuantity(BigInteger.valueOf(1));
 
-		Cart cart = api.cartCreate(request);
+		Cart cart = api.getCartCreate().call(request);
 
 		assertNotNull(cart.getPurchaseURL());
 	}
@@ -133,7 +133,7 @@ public class TestAPI extends AbstractTest {
 			item.setASIN("383102037X");
 			item.setQuantity(BigInteger.valueOf(1));
 
-			createdCart = api.cartCreate(request);
+			createdCart = api.getCartCreate().call(request);
 		}
 
 		Cart cart = api.cartGet(createdCart);
@@ -171,7 +171,7 @@ public class TestAPI extends AbstractTest {
 
 			}
 
-			createdCart = api.cartCreate(request);
+			createdCart = api.getCartCreate().call(request);
 		}
 
 		CartModifyRequest request = api.buildCartModifyRequest(createdCart);
@@ -232,7 +232,7 @@ public class TestAPI extends AbstractTest {
 			item.setQuantity(BigInteger.valueOf(3));
 			items.getItem().add(item);
 
-			createdCart = api.cartCreate(request);
+			createdCart = api.getCartCreate().call(request);
 		}
 
 		CartAddRequest request = api.buildCartAddRequest(createdCart);
@@ -270,7 +270,7 @@ public class TestAPI extends AbstractTest {
 			item.setQuantity(BigInteger.valueOf(3));
 			items.getItem().add(item);
 
-			createdCart = api.cartCreate(request);
+			createdCart = api.getCartCreate().call(request);
 		}
 
 		CartClearRequest request = api.buildCartClearRequest(createdCart);
@@ -283,7 +283,7 @@ public class TestAPI extends AbstractTest {
 	public void testFailSimilarityLookup() throws RequestException {
 		SimilarityLookupRequest lookup = new SimilarityLookupRequest();
 
-		api.similarityLookup(lookup);
+		api.getSimilarityLookup().call(lookup);
 	}
 	
 	@Test()
@@ -291,7 +291,7 @@ public class TestAPI extends AbstractTest {
 		SimilarityLookupRequest lookup = new SimilarityLookupRequest();
 		lookup.getItemId().add("383102037X");
 		
-		Items items = api.similarityLookup(lookup);
+		Items items = api.getSimilarityLookup().call(lookup);
 		
 		assertTrue(! items.getItem().isEmpty());
 	}

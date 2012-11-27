@@ -3,4 +3,4 @@
 .project
 target
 src/test/resources/
-src/test/java/de/malkusch/amazon/ecs/test/Sandbox.java
+src/test/java/de/malkusch/amazon/ecs/test/sandbox

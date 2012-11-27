@@ -11,32 +11,25 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.ECS.client.jax.AWSECommerceService;
 import com.ECS.client.jax.AWSECommerceServicePortType;
-import com.ECS.client.jax.BrowseNodeLookup;
-import com.ECS.client.jax.BrowseNodeLookupRequest;
-import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.Cart;
 import com.ECS.client.jax.CartAdd;
 import com.ECS.client.jax.CartAddRequest;
 import com.ECS.client.jax.CartClear;
 import com.ECS.client.jax.CartClearRequest;
-import com.ECS.client.jax.CartCreate;
-import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.CartGet;
 import com.ECS.client.jax.CartGetRequest;
 import com.ECS.client.jax.CartModify;
 import com.ECS.client.jax.CartModifyRequest;
 import com.ECS.client.jax.Errors;
 import com.ECS.client.jax.Errors.Error;
-import com.ECS.client.jax.ItemLookup;
-import com.ECS.client.jax.ItemLookupRequest;
-import com.ECS.client.jax.ItemSearch;
-import com.ECS.client.jax.ItemSearchRequest;
-import com.ECS.client.jax.Items;
 import com.ECS.client.jax.OperationRequest;
 import com.ECS.client.jax.Request;
-import com.ECS.client.jax.SimilarityLookup;
-import com.ECS.client.jax.SimilarityLookupRequest;
 
+import de.malkusch.amazon.ecs.call.BrowseNodeLookupCall;
+import de.malkusch.amazon.ecs.call.CartCreateCall;
+import de.malkusch.amazon.ecs.call.ItemLookupCall;
+import de.malkusch.amazon.ecs.call.ItemSeachCall;
+import de.malkusch.amazon.ecs.call.SimilarityLookupCall;
 import de.malkusch.amazon.ecs.configuration.Configuration;
 import de.malkusch.amazon.ecs.exception.RequestException;
 
@@ -106,8 +99,12 @@ public class ProductAvertisingAPI {
 	}
 
 	private AWSECommerceServicePortType port;
-
 	private Configuration configuration;
+	private ItemSeachCall itemSearch = new ItemSeachCall(this);
+	private SimilarityLookupCall similarityLookup = new SimilarityLookupCall(this);
+	private ItemLookupCall itemLookup = new ItemLookupCall(this);
+	private BrowseNodeLookupCall browseNodeLookup = new BrowseNodeLookupCall(this);
+	private CartCreateCall cartCreate = new CartCreateCall(this);
 
 	public ProductAvertisingAPI(Configuration configuration)
 			throws UnsupportedEncodingException {
@@ -285,157 +282,31 @@ public class ProductAvertisingAPI {
 		return cart;
 	}
 	
-	public CartCreate buildCartCreate() {
-		CartCreate cartCreate = new CartCreate();
-		cartCreate.setAssociateTag(configuration.getAssociateTag());
-		cartCreate.setAWSAccessKeyId(configuration.getAccessKey());
+	public CartCreateCall getCartCreate() {
 		return cartCreate;
 	}
-	
-	public CartCreate buildCartCreate(CartCreateRequest request) {
-		CartCreate cartCreate = buildCartCreate();
-		cartCreate.getRequest().add(request);
-		return cartCreate;
-	}
-	
-	public List<Cart> cartCreate(CartCreate cartCreate) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Cart>> cart = new Holder<List<Cart>>();
-		port.cartCreate(cartCreate.getMarketplaceDomain(),
-				cartCreate.getAWSAccessKeyId(), cartCreate.getAssociateTag(),
-				cartCreate.getValidate(), cartCreate.getXMLEscaping(),
-				cartCreate.getShared(), cartCreate.getRequest(), operationRequest,
-				cart);
-		return cart.value;
-	}
-	
-	public Cart cartCreate(CartCreateRequest request) throws RequestException {
-		Cart cart = cartCreate(buildCartCreate(request)).get(0);
-		validateResponse(cart.getRequest());
-		return cart;
+
+	public BrowseNodeLookupCall getBrowseNodeLookup() {
+		return browseNodeLookup;
 	}
 
-	public BrowseNodeLookup buildBrowseNodeLookup() {
-		BrowseNodeLookup lookup = new BrowseNodeLookup();
-		lookup.setAWSAccessKeyId(configuration.getAccessKey());
-		lookup.setAssociateTag(configuration.getAssociateTag());
-		return lookup;
-	}
-
-	public BrowseNodeLookup buildBrowseNodeLookup(
-			BrowseNodeLookupRequest request) {
-		BrowseNodeLookup lookup = buildBrowseNodeLookup();
-		lookup.getRequest().add(request);
-		return lookup;
-	}
-
-	public List<BrowseNodes> browseNodeLookup(BrowseNodeLookup lookup) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<BrowseNodes>> nodes = new Holder<List<BrowseNodes>>();
-		port.browseNodeLookup(lookup.getMarketplaceDomain(),
-				lookup.getAWSAccessKeyId(), lookup.getAssociateTag(),
-				lookup.getValidate(), lookup.getXMLEscaping(),
-				lookup.getShared(), lookup.getRequest(), operationRequest,
-				nodes);
-		return nodes.value;
-	}
-	
-	public BrowseNodes browseNodeLookup(BrowseNodeLookupRequest request) throws RequestException {
-		BrowseNodes nodes = browseNodeLookup(buildBrowseNodeLookup(request)).get(0);
-		validateResponse(nodes.getRequest());
-		return nodes;
-	}
-
-	public ItemLookup buildItemLookup() {
-		ItemLookup itemLookup = new ItemLookup();
-		itemLookup.setAWSAccessKeyId(configuration.getAccessKey());
-		itemLookup.setAssociateTag(configuration.getAssociateTag());
+	public ItemLookupCall getItemLookup() {
 		return itemLookup;
 	}
-
-	public ItemLookup buildItemLookup(ItemLookupRequest request) {
-		ItemLookup itemLookup = buildItemLookup();
-		itemLookup.getRequest().add(request);
-		return itemLookup;
-	}
-
-	public Items itemLookup(ItemLookupRequest request) throws RequestException {
-		Items items = itemLookup(buildItemLookup(request)).get(0);
-		validateResponse(items.getRequest());
-		return items;
-	}
-
-	public List<Items> itemLookup(ItemLookup lookup) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Items>> items = new Holder<List<Items>>();
-		port.itemLookup(lookup.getMarketplaceDomain(),
-				lookup.getAWSAccessKeyId(), lookup.getAssociateTag(),
-				lookup.getValidate(), lookup.getXMLEscaping(),
-				lookup.getShared(), lookup.getRequest(), operationRequest,
-				items);
-		return items.value;
+	
+	public SimilarityLookupCall getSimilarityLookup() {
+		return similarityLookup;
 	}
 	
-	public SimilarityLookup buildSimilarityLookup() {
-		SimilarityLookup lookup = new SimilarityLookup();
-		lookup.setAWSAccessKeyId(configuration.getAccessKey());
-		lookup.setAssociateTag(configuration.getAssociateTag());
-		return lookup;
-	}
-	
-	public SimilarityLookup buildSimilarityLookup(SimilarityLookupRequest request) {
-		SimilarityLookup lookup = buildSimilarityLookup();
-		lookup.getRequest().add(request);
-		return lookup;
-	}
-	
-	public List<Items> similarityLookup(SimilarityLookup similarityLookup) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Items>> items = new Holder<List<Items>>();
-		port.similarityLookup(similarityLookup.getMarketplaceDomain(),
-				similarityLookup.getAWSAccessKeyId(), similarityLookup.getAssociateTag(),
-				similarityLookup.getXMLEscaping(), similarityLookup.getValidate(),
-				similarityLookup.getShared(), similarityLookup.getRequest(),
-				operationRequest, items);
-		return items.value;
-	}
-	
-	public Items similarityLookup(SimilarityLookupRequest request) throws RequestException {
-		Items items = similarityLookup(buildSimilarityLookup(request)).get(0);
-		validateResponse(items.getRequest());
-		return items;
-	}
-
-	public ItemSearch buildItemSearch() {
-		ItemSearch itemSearch = new ItemSearch();
-		itemSearch.setAWSAccessKeyId(configuration.getAccessKey());
-		itemSearch.setAssociateTag(configuration.getAssociateTag());
+	public ItemSeachCall getItemSearch() {
 		return itemSearch;
 	}
-
-	public ItemSearch buildItemSearch(ItemSearchRequest request) {
-		ItemSearch itemSearch = buildItemSearch();
-		itemSearch.getRequest().add(request);
-		return itemSearch;
+	
+	public Configuration getConfiguration() {
+		return configuration;
 	}
 
-	public Items itemSearch(ItemSearchRequest request) throws RequestException {
-		Items items = itemSearch(buildItemSearch(request)).get(0);
-		validateResponse(items.getRequest());
-		return items;
-	}
-
-	public List<Items> itemSearch(ItemSearch itemSearch) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Items>> items = new Holder<List<Items>>();
-		port.itemSearch(itemSearch.getMarketplaceDomain(),
-				itemSearch.getAWSAccessKeyId(), itemSearch.getAssociateTag(),
-				itemSearch.getXMLEscaping(), itemSearch.getValidate(),
-				itemSearch.getShared(), itemSearch.getRequest(),
-				operationRequest, items);
-		return items.value;
-	}
-
+	@Deprecated
 	private void validateResponse(Request request) throws RequestException {
 		Errors errors = request.getErrors();
 		if (errors != null && errors.getError() != null) {
