@@ -14,6 +14,9 @@ import de.malkusch.amazon.ecs.ProductAvertisingAPI;
 import de.malkusch.amazon.ecs.ProductAvertisingAPI.Boolean;
 import de.malkusch.amazon.ecs.exception.RequestException;
 
+/**
+ * @author Markus Malkusch <markus@malkusch.de>
+ */
 abstract public class ApiCall<CallType, RequestType, ResultType> {
 
 	protected ProductAvertisingAPI api;
