@@ -20,7 +20,7 @@ public class CartAddCall extends CartCall<CartAdd, CartAddRequest> {
 	@Override
 	protected void call(CartAdd call,
 			Holder<OperationRequest> operationRequest, Holder<List<Cart>> result) {
-		
+
 		api.getPort().cartAdd(call.getMarketplaceDomain(),
 				call.getAWSAccessKeyId(), call.getAssociateTag(),
 				call.getXMLEscaping(), call.getValidate(), call.getShared(),

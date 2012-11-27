@@ -21,13 +21,13 @@ public class CartGetCall extends CartCall<CartGet, CartGetRequest> {
 	@Override
 	protected void call(CartGet call,
 			Holder<OperationRequest> operationRequest, Holder<List<Cart>> result) {
-		
+
 		api.getPort().cartGet(call.getMarketplaceDomain(),
 				call.getAWSAccessKeyId(), call.getAssociateTag(),
 				call.getXMLEscaping(), call.getValidate(), call.getShared(),
 				call.getRequest(), operationRequest, result);
 	}
-	
+
 	public Cart call(Cart cart) throws RequestException {
 		return call(buildRequest(cart));
 	}

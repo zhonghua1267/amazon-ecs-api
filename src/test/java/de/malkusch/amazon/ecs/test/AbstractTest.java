@@ -11,16 +11,16 @@ import de.malkusch.amazon.ecs.configuration.PropertiesConfiguration;
 abstract public class AbstractTest {
 
 	protected PropertiesConfiguration configuration;
-	
+
 	protected ProductAvertisingAPI api;
 
-	public AbstractTest() throws IOException
-	{
+	public AbstractTest() throws IOException {
 		Properties properties = new Properties();
 		properties.load(getClass().getResourceAsStream("/amazon.properties"));
 		configuration = new PropertiesConfiguration(properties);
-		
-		api = new ProductAvertisingAPI(configuration, new AWSECommerceService().getAWSECommerceServicePortDE());
+
+		api = new ProductAvertisingAPI(configuration,
+				new AWSECommerceService().getAWSECommerceServicePortDE());
 	}
 
 }

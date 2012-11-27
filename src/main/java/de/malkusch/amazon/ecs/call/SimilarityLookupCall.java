@@ -11,7 +11,8 @@ import com.ECS.client.jax.SimilarityLookupRequest;
 
 import de.malkusch.amazon.ecs.ProductAvertisingAPI;
 
-public class SimilarityLookupCall extends ItemCall<SimilarityLookup, SimilarityLookupRequest> {
+public class SimilarityLookupCall extends
+		ItemCall<SimilarityLookup, SimilarityLookupRequest> {
 
 	public SimilarityLookupCall(ProductAvertisingAPI api) {
 		super(api, SimilarityLookup.class);
@@ -21,7 +22,7 @@ public class SimilarityLookupCall extends ItemCall<SimilarityLookup, SimilarityL
 	protected void call(SimilarityLookup call,
 			Holder<OperationRequest> operationRequest,
 			Holder<List<Items>> result) {
-		
+
 		api.getPort().similarityLookup(call.getMarketplaceDomain(),
 				call.getAWSAccessKeyId(), call.getAssociateTag(),
 				call.getXMLEscaping(), call.getValidate(), call.getShared(),

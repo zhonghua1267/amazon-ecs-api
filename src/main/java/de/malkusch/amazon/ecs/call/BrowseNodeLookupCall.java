@@ -11,7 +11,8 @@ import com.ECS.client.jax.OperationRequest;
 
 import de.malkusch.amazon.ecs.ProductAvertisingAPI;
 
-public class BrowseNodeLookupCall extends ApiCall<BrowseNodeLookup, BrowseNodeLookupRequest, BrowseNodes> {
+public class BrowseNodeLookupCall extends
+		ApiCall<BrowseNodeLookup, BrowseNodeLookupRequest, BrowseNodes> {
 
 	public BrowseNodeLookupCall(ProductAvertisingAPI api) {
 		super(api, BrowseNodeLookup.class);
@@ -21,7 +22,7 @@ public class BrowseNodeLookupCall extends ApiCall<BrowseNodeLookup, BrowseNodeLo
 	protected void call(BrowseNodeLookup call,
 			Holder<OperationRequest> operationRequest,
 			Holder<List<BrowseNodes>> result) {
-		
+
 		api.getPort().browseNodeLookup(call.getMarketplaceDomain(),
 				call.getAWSAccessKeyId(), call.getAssociateTag(),
 				call.getXMLEscaping(), call.getValidate(), call.getShared(),

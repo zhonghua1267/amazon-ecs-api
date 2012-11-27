@@ -174,7 +174,8 @@ public class TestAPI extends AbstractTest {
 			createdCart = api.getCartCreate().call(request);
 		}
 
-		CartModifyRequest request = api.getCartModify().buildRequest(createdCart);
+		CartModifyRequest request = api.getCartModify().buildRequest(
+				createdCart);
 		request.setItems(new CartModifyRequest.Items());
 
 		// decrease
@@ -200,17 +201,17 @@ public class TestAPI extends AbstractTest {
 
 		Cart modifiedCart = api.getCartModify().call(request);
 
-		assertEquals("2", modifiedCart.getCartItems()
-				.getCartItem().get(0).getQuantity());
-		assertEquals("4", modifiedCart.getCartItems()
-				.getCartItem().get(1).getQuantity());
+		assertEquals("2", modifiedCart.getCartItems().getCartItem().get(0)
+				.getQuantity());
+		assertEquals("4", modifiedCart.getCartItems().getCartItem().get(1)
+				.getQuantity());
 		assertEquals(createdCart.getCartItems().getCartItem().get(3)
 				.getCartItemId(), modifiedCart.getCartItems().getCartItem()
 				.get(2).getCartItemId());
 		assertEquals(createdCart.getCartItems().getCartItem().size() - 1,
 				modifiedCart.getCartItems().getCartItem().size());
 	}
-	
+
 	@Test(expected = RequestException.class)
 	public void testFailCartAdd() throws RequestException {
 		CartAddRequest request = new CartAddRequest();
@@ -237,25 +238,26 @@ public class TestAPI extends AbstractTest {
 
 		CartAddRequest request = api.getCartAdd().buildRequest(createdCart);
 		request.setItems(new CartAddRequest.Items());
-		
+
 		CartAddRequest.Items.Item item = new CartAddRequest.Items.Item();
 		item.setASIN("3831019592");
 		item.setQuantity(BigInteger.valueOf(1));
 		request.getItems().getItem().add(item);
-		
+
 		Cart addedCart = api.getCartAdd().call(request);
-		
+
 		assertEquals(2, addedCart.getCartItems().getCartItem().size());
-		assertEquals("3831019592", addedCart.getCartItems().getCartItem().get(0).getASIN());
+		assertEquals("3831019592", addedCart.getCartItems().getCartItem()
+				.get(0).getASIN());
 	}
-	
+
 	@Test(expected = RequestException.class)
 	public void testFailCartClear() throws RequestException {
 		CartClearRequest request = new CartClearRequest();
 
 		api.getCartClear().call(request);
 	}
-	
+
 	@Test
 	public void testCartClear() throws RequestException {
 		Cart createdCart = null;
@@ -274,7 +276,7 @@ public class TestAPI extends AbstractTest {
 		}
 
 		Cart clearedCart = api.getCartClear().call(createdCart);
-		
+
 		assertNull(clearedCart.getCartItems());
 	}
 
@@ -284,15 +286,15 @@ public class TestAPI extends AbstractTest {
 
 		api.getSimilarityLookup().call(lookup);
 	}
-	
+
 	@Test()
 	public void testSimilarityLookup() throws RequestException {
 		SimilarityLookupRequest lookup = new SimilarityLookupRequest();
 		lookup.getItemId().add("383102037X");
-		
+
 		Items items = api.getSimilarityLookup().call(lookup);
-		
-		assertTrue(! items.getItem().isEmpty());
+
+		assertTrue(!items.getItem().isEmpty());
 	}
 
 }

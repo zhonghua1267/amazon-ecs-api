@@ -21,10 +21,8 @@ import de.malkusch.amazon.ecs.configuration.Configuration;
 /**
  * 
  * @author Markus Malkusch <markus@malkusch.de>
- * @see http
- *      ://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/
- *      APPNDX_SearchIndexValues.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/APPNDX_SearchIndexValues.html
  */
 public class ProductAvertisingAPI {
 

@@ -21,7 +21,7 @@ public class CartClearCall extends CartCall<CartClear, CartClearRequest> {
 	@Override
 	protected void call(CartClear call,
 			Holder<OperationRequest> operationRequest, Holder<List<Cart>> result) {
-		
+
 		api.getPort().cartClear(call.getMarketplaceDomain(),
 				call.getAWSAccessKeyId(), call.getAssociateTag(),
 				call.getXMLEscaping(), call.getValidate(), call.getShared(),

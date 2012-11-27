@@ -21,7 +21,7 @@ public class ItemLookupCall extends ItemCall<ItemLookup, ItemLookupRequest> {
 	protected void call(ItemLookup call,
 			Holder<OperationRequest> operationRequest,
 			Holder<List<Items>> result) {
-		
+
 		api.getPort().itemLookup(call.getMarketplaceDomain(),
 				call.getAWSAccessKeyId(), call.getAssociateTag(),
 				call.getXMLEscaping(), call.getValidate(), call.getShared(),

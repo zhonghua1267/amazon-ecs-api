@@ -30,19 +30,20 @@ import org.w3c.dom.Node;
 import de.malkusch.amazon.ecs.configuration.Authentication;
 
 /**
- * SoapHandler for adding the authentication headers to an Amazon Product Advertising API call
+ * SoapHandler for adding the authentication headers to an Amazon Product
+ * Advertising API call
  * 
  * This SoapHandler generates the signature for the soap call. Amazon's
- * authentication SOAP headers AWSAccessKeyId, Timestamp and Signature will
- * be added to the SOAP-request.
+ * authentication SOAP headers AWSAccessKeyId, Timestamp and Signature will be
+ * added to the SOAP-request.
  * 
  * This class is thread safe.
  * 
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/NotUsingWSSecurity.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/
+ *      NotUsingWSSecurity.html
  * @author Markus Malkusch <markus@malkusch.de>
  */
-public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
-{
+public class SignatureHandler implements SOAPHandler<SOAPMessageContext> {
 
 	public final static String ACCESS_KEY = "AWSAccessKeyId";
 	public final static String TIMESTAMP = "Timestamp";
@@ -51,34 +52,32 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 	public final static String SIGN_ALGORITHM = "HmacSHA256";
 
 	private String accessKey;
-	private SimpleDateFormat dateFormat ;
+	private SimpleDateFormat dateFormat;
 	private SecretKeySpec secretKeySpec;
-	
-	public SignatureHandler(Authentication authentication) throws UnsupportedEncodingException
-	{
+
+	public SignatureHandler(Authentication authentication)
+			throws UnsupportedEncodingException {
 		this(authentication.getAccessKey(), authentication.getSecretKey());
 	}
-	
-	public SignatureHandler(String accessKey, String secretKey) throws UnsupportedEncodingException
-	{
+
+	public SignatureHandler(String accessKey, String secretKey)
+			throws UnsupportedEncodingException {
 		this(accessKey, secretKey.getBytes("UTF-8"));
 	}
-	
-	public SignatureHandler(String accessKey, byte[] secretKey)
-	{
+
+	public SignatureHandler(String accessKey, byte[] secretKey) {
 		this.accessKey = accessKey;
-		
+
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		
+
 		secretKeySpec = new SecretKeySpec(secretKey, SIGN_ALGORITHM);
 	}
-	
+
 	/**
 	 * Appends this handler to a handler chain
 	 */
-	public void appendHandler(BindingProvider provider)
-	{
+	public void appendHandler(BindingProvider provider) {
 		Binding binding = provider.getBinding();
 		@SuppressWarnings("rawtypes")
 		List<Handler> handlerList = binding.getHandlerChain();
@@ -91,20 +90,21 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 	 * 
 	 * This method is thread safe.
 	 */
-	public boolean handleMessage(SOAPMessageContext messagecontext)
-	{
+	public boolean handleMessage(SOAPMessageContext messagecontext) {
 		try {
-			Boolean outbound = (Boolean) messagecontext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-			if (! outbound) {
+			Boolean outbound = (Boolean) messagecontext
+					.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+			if (!outbound) {
 				return true;
 
 			}
-			
+
 			SOAPMessage soapMessage = messagecontext.getMessage();
 			SOAPBody soapBody = soapMessage.getSOAPBody();
 			Node operation = soapBody.getFirstChild();
 
-			String timeStamp = dateFormat.format(Calendar.getInstance().getTime());
+			String timeStamp = dateFormat.format(Calendar.getInstance()
+					.getTime());
 			String signature = getSignature(operation.getLocalName(), timeStamp);
 
 			// Add the authentication headers
@@ -112,36 +112,37 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 			SOAPHeader header = soapEnv.getHeader();
 			if (header == null) {
 				header = soapEnv.addHeader();
-				
+
 			}
 			addHeader(header, ACCESS_KEY, accessKey);
 			addHeader(header, TIMESTAMP, timeStamp);
 			addHeader(header, SIGNATURE, signature);
 
 			return true;
-			
+
 		} catch (SOAPException e) {
 			throw new RuntimeException(e);
-			
+
 		} catch (InvalidKeyException e) {
 			throw new RuntimeException(e);
-			
+
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
-			
+
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 
 		}
 	}
-	
-	private void addHeader(SOAPHeader header, String name, String value) throws SOAPException
-	{
+
+	private void addHeader(SOAPHeader header, String name, String value)
+			throws SOAPException {
 		header.addChildElement(new QName(NAMESPACE, name)).addTextNode(value);
 	}
 
-	private String getSignature(String operation, String timeStamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException
-	{
+	private String getSignature(String operation, String timeStamp)
+			throws NoSuchAlgorithmException, UnsupportedEncodingException,
+			InvalidKeyException {
 		String toSign = operation + timeStamp;
 		byte[] toSignBytes = toSign.getBytes("UTF-8");
 
@@ -153,18 +154,15 @@ public class SignatureHandler implements SOAPHandler<SOAPMessageContext>
 		return DatatypeConverter.printBase64Binary(signBytes);
 	}
 
-	public void close(MessageContext messagecontext)
-	{
+	public void close(MessageContext messagecontext) {
 	}
 
-	public Set<QName> getHeaders()
-	{
+	public Set<QName> getHeaders() {
 		return null;
 	}
 
-	public boolean handleFault(SOAPMessageContext messagecontext)
-	{
+	public boolean handleFault(SOAPMessageContext messagecontext) {
 		return true;
 	}
-	
+
 }
