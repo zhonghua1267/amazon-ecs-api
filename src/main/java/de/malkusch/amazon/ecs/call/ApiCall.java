@@ -21,13 +21,13 @@ abstract public class ApiCall<CallType, RequestType, ResultType> {
 	
 	protected ProductAvertisingAPI api;
 	
-	private Class<CallType> factoryClass;
+	private Class<CallType> callClass;
 	
 	abstract protected void call(CallType call, Holder<OperationRequest> operationRequest, Holder<List<ResultType>> result);
 	
-	public ApiCall(ProductAvertisingAPI api, Class<CallType> factoryClass) {
+	public ApiCall(ProductAvertisingAPI api, Class<CallType> callClass) {
 		this.api = api;
-		this.factoryClass = factoryClass;
+		this.callClass = callClass;
 	}
 	
 	public List<ResultType> callRequests(CallType call) {
@@ -46,7 +46,7 @@ abstract public class ApiCall<CallType, RequestType, ResultType> {
 	
 	public CallType buildCall() {
 		try {
-			CallType instance = factoryClass.newInstance();
+			CallType instance = callClass.newInstance();
 			ApiCallParameters<?> parameter = InterfaceDecorator.getProxy(instance, ApiCallParameters.class);
 			parameter.setAssociateTag(api.getConfiguration().getAssociateTag());
 			parameter.setAWSAccessKeyId(api.getConfiguration().getAccessKey());

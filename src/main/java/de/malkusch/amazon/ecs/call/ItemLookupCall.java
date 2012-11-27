@@ -11,7 +11,7 @@ import com.ECS.client.jax.OperationRequest;
 
 import de.malkusch.amazon.ecs.ProductAvertisingAPI;
 
-public class ItemLookupCall extends ApiCall<ItemLookup, ItemLookupRequest, Items> {
+public class ItemLookupCall extends ItemCall<ItemLookup, ItemLookupRequest> {
 
 	public ItemLookupCall(ProductAvertisingAPI api) {
 		super(api, ItemLookup.class);

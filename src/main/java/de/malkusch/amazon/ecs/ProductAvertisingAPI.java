@@ -1,43 +1,30 @@
 package de.malkusch.amazon.ecs;
 
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Holder;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.ECS.client.jax.AWSECommerceService;
 import com.ECS.client.jax.AWSECommerceServicePortType;
-import com.ECS.client.jax.Cart;
-import com.ECS.client.jax.CartAdd;
-import com.ECS.client.jax.CartAddRequest;
-import com.ECS.client.jax.CartClear;
-import com.ECS.client.jax.CartClearRequest;
-import com.ECS.client.jax.CartGet;
-import com.ECS.client.jax.CartGetRequest;
-import com.ECS.client.jax.CartModify;
-import com.ECS.client.jax.CartModifyRequest;
-import com.ECS.client.jax.Errors;
-import com.ECS.client.jax.Errors.Error;
-import com.ECS.client.jax.OperationRequest;
-import com.ECS.client.jax.Request;
 
 import de.malkusch.amazon.ecs.call.BrowseNodeLookupCall;
+import de.malkusch.amazon.ecs.call.CartAddCall;
+import de.malkusch.amazon.ecs.call.CartClearCall;
 import de.malkusch.amazon.ecs.call.CartCreateCall;
+import de.malkusch.amazon.ecs.call.CartGetCall;
+import de.malkusch.amazon.ecs.call.CartModifyCall;
 import de.malkusch.amazon.ecs.call.ItemLookupCall;
 import de.malkusch.amazon.ecs.call.ItemSeachCall;
 import de.malkusch.amazon.ecs.call.SimilarityLookupCall;
 import de.malkusch.amazon.ecs.configuration.Configuration;
-import de.malkusch.amazon.ecs.exception.RequestException;
 
 /**
  * 
  * @author Markus Malkusch <markus@malkusch.de>
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/APPNDX_SearchIndexValues.html
+ * @see http
+ *      ://docs.amazonwebservices.com/AWSECommerceService/latest/DG/Welcome.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/
+ *      APPNDX_SearchIndexValues.html
  */
 public class ProductAvertisingAPI {
 
@@ -101,10 +88,16 @@ public class ProductAvertisingAPI {
 	private AWSECommerceServicePortType port;
 	private Configuration configuration;
 	private ItemSeachCall itemSearch = new ItemSeachCall(this);
-	private SimilarityLookupCall similarityLookup = new SimilarityLookupCall(this);
+	private SimilarityLookupCall similarityLookup = new SimilarityLookupCall(
+			this);
 	private ItemLookupCall itemLookup = new ItemLookupCall(this);
-	private BrowseNodeLookupCall browseNodeLookup = new BrowseNodeLookupCall(this);
+	private BrowseNodeLookupCall browseNodeLookup = new BrowseNodeLookupCall(
+			this);
 	private CartCreateCall cartCreate = new CartCreateCall(this);
+	private CartGetCall cartGet = new CartGetCall(this);
+	private CartClearCall cartClear = new CartClearCall(this);
+	private CartModifyCall cartModify = new CartModifyCall(this);
+	private CartAddCall cartAdd = new CartAddCall(this);
 
 	public ProductAvertisingAPI(Configuration configuration)
 			throws UnsupportedEncodingException {
@@ -129,159 +122,23 @@ public class ProductAvertisingAPI {
 	public AWSECommerceServicePortType getPort() {
 		return port;
 	}
-	
-	public CartClearRequest buildCartClearRequest(Cart cart) {
-		CartClearRequest request = new CartClearRequest();
-		request.setHMAC(cart.getHMAC());
-		request.setCartId(cart.getCartId());
-		return request;
+
+	public CartAddCall getCartAdd() {
+		return cartAdd;
 	}
-	
-	public CartClear buildCartClear() {
-		CartClear clear = new CartClear();
-		clear.setAssociateTag(configuration.getAssociateTag());
-		clear.setAWSAccessKeyId(configuration.getAccessKey());
-		return clear;
+
+	public CartModifyCall getCartModify() {
+		return cartModify;
 	}
-	
-	public CartClear buildCartClear(CartClearRequest request) {
-		CartClear clear = buildCartClear();
-		clear.getRequest().add(request);
-		return clear;
+
+	public CartClearCall getCartClear() {
+		return cartClear;
 	}
-	
-	public List<Cart> cartClear(CartClear cartClear) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Cart>> cart = new Holder<List<Cart>>();
-		port.cartClear(cartClear.getMarketplaceDomain(),
-				cartClear.getAWSAccessKeyId(), cartClear.getAssociateTag(),
-				cartClear.getValidate(), cartClear.getXMLEscaping(),
-				cartClear.getShared(), cartClear.getRequest(), operationRequest,
-				cart);
-		return cart.value;
+
+	public CartGetCall getCartGet() {
+		return cartGet;
 	}
-	
-	public Cart cartClear(CartClearRequest request) throws RequestException {
-		Cart cart = cartClear(buildCartClear(request)).get(0);
-		validateResponse(cart.getRequest());
-		return cart;
-	}
-	
-	public CartAddRequest buildCartAddRequest(Cart cart) {
-		CartAddRequest request = new CartAddRequest();
-		request.setHMAC(cart.getHMAC());
-		request.setCartId(cart.getCartId());
-		return request;
-	}
-	
-	public CartAdd buildCartAdd() {
-		CartAdd add = new CartAdd();
-		add.setAssociateTag(configuration.getAssociateTag());
-		add.setAWSAccessKeyId(configuration.getAccessKey());
-		return add;
-	}
-	
-	public CartAdd buildCartAdd(CartAddRequest request) {
-		CartAdd add = buildCartAdd();
-		add.getRequest().add(request);
-		return add;
-	}
-	
-	public List<Cart> cartAdd(CartAdd cartAdd) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Cart>> cart = new Holder<List<Cart>>();
-		port.cartAdd(cartAdd.getMarketplaceDomain(),
-				cartAdd.getAWSAccessKeyId(), cartAdd.getAssociateTag(),
-				cartAdd.getValidate(), cartAdd.getXMLEscaping(),
-				cartAdd.getShared(), cartAdd.getRequest(), operationRequest,
-				cart);
-		return cart.value;
-	}
-	
-	public Cart cartAdd(CartAddRequest request) throws RequestException {
-		Cart cart = cartAdd(buildCartAdd(request)).get(0);
-		validateResponse(cart.getRequest());
-		return cart;
-	}
-	
-	public CartModifyRequest buildCartModifyRequest(Cart cart) {
-		CartModifyRequest request = new CartModifyRequest();
-		request.setHMAC(cart.getHMAC());
-		request.setCartId(cart.getCartId());
-		return request;
-	}
-	
-	public CartModify buildCartModify() {
-		CartModify modify = new CartModify();
-		modify.setAssociateTag(configuration.getAssociateTag());
-		modify.setAWSAccessKeyId(configuration.getAccessKey());
-		return modify;
-	}
-	
-	public CartModify buildCartModify(CartModifyRequest request) {
-		CartModify modify = buildCartModify();
-		modify.getRequest().add(request);
-		return modify;
-	}
-	
-	public List<Cart> cartModify(CartModify cartModify) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Cart>> cart = new Holder<List<Cart>>();
-		port.cartModify(cartModify.getMarketplaceDomain(),
-				cartModify.getAWSAccessKeyId(), cartModify.getAssociateTag(),
-				cartModify.getValidate(), cartModify.getXMLEscaping(),
-				cartModify.getShared(), cartModify.getRequest(), operationRequest,
-				cart);
-		return cart.value;
-	}
-	
-	public Cart cartModify(CartModifyRequest request) throws RequestException {
-		Cart cart = cartModify(buildCartModify(request)).get(0);
-		validateResponse(cart.getRequest());
-		return cart;
-	}
-	
-	public CartGet buildCartGet() {
-		CartGet get = new CartGet();
-		get.setAssociateTag(configuration.getAssociateTag());
-		get.setAWSAccessKeyId(configuration.getAccessKey());
-		return get;
-	}
-	
-	public CartGet buildCartGet(CartGetRequest request) {
-		CartGet get = buildCartGet();
-		get.getRequest().add(request);
-		return get;
-	}
-	
-	public CartGetRequest buildCartGetRequest(Cart cart) {
-		CartGetRequest request = new CartGetRequest();
-		request.setHMAC(cart.getHMAC());
-		request.setCartId(cart.getCartId());
-		return request;
-	}
-	
-	public List<Cart> cartGet(CartGet cartGet) {
-		Holder<OperationRequest> operationRequest = null;
-		Holder<List<Cart>> cart = new Holder<List<Cart>>();
-		port.cartGet(cartGet.getMarketplaceDomain(),
-				cartGet.getAWSAccessKeyId(), cartGet.getAssociateTag(),
-				cartGet.getValidate(), cartGet.getXMLEscaping(),
-				cartGet.getShared(), cartGet.getRequest(), operationRequest,
-				cart);
-		return cart.value;
-	}
-	
-	public Cart cartGet(Cart cart) throws RequestException {
-		return cartGet(buildCartGetRequest(cart));
-	}
-	
-	public Cart cartGet(CartGetRequest request) throws RequestException {
-		Cart cart = cartGet(buildCartGet(request)).get(0);
-		validateResponse(cart.getRequest());
-		return cart;
-	}
-	
+
 	public CartCreateCall getCartCreate() {
 		return cartCreate;
 	}
@@ -293,35 +150,17 @@ public class ProductAvertisingAPI {
 	public ItemLookupCall getItemLookup() {
 		return itemLookup;
 	}
-	
+
 	public SimilarityLookupCall getSimilarityLookup() {
 		return similarityLookup;
 	}
-	
+
 	public ItemSeachCall getItemSearch() {
 		return itemSearch;
 	}
-	
+
 	public Configuration getConfiguration() {
 		return configuration;
-	}
-
-	@Deprecated
-	private void validateResponse(Request request) throws RequestException {
-		Errors errors = request.getErrors();
-		if (errors != null && errors.getError() != null) {
-			LinkedList<String> errorMessages = new LinkedList<String>();
-			for (Error error : errors.getError()) {
-				errorMessages.add(error.getMessage());
-
-			}
-			throw new RequestException(StringUtils.join(errorMessages, '\n'));
-
-		}
-		if (request.getIsValid().equals(Boolean.FALSE)) {
-			throw new RequestException();
-
-		}
 	}
 
 }
