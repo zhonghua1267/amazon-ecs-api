@@ -1,16 +1,13 @@
 package de.malkusch.amazon.ecs.call;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.ws.Holder;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.ECS.client.jax.Errors;
+import com.ECS.client.jax.Errors.Error;
 import com.ECS.client.jax.OperationRequest;
 import com.ECS.client.jax.Request;
-import com.ECS.client.jax.Errors.Error;
 
 import de.malkusch.amazon.ecs.InterfaceDecorator;
 import de.malkusch.amazon.ecs.ProductAvertisingAPI;
@@ -71,12 +68,12 @@ abstract public class ApiCall<CallType, RequestType, ResultType> {
 	private void validateResponse(Request request) throws RequestException {
 		Errors errors = request.getErrors();
 		if (errors != null && errors.getError() != null) {
-			LinkedList<String> errorMessages = new LinkedList<String>();
+			StringBuffer errorMessages = new StringBuffer();
 			for (Error error : errors.getError()) {
-				errorMessages.add(error.getMessage());
+				errorMessages.append(error.getMessage()).append('\n');
 
 			}
-			throw new RequestException(StringUtils.join(errorMessages, '\n'));
+			throw new RequestException(errorMessages.toString());
 
 		}
 		if (request.getIsValid().equals(Boolean.FALSE)) {
