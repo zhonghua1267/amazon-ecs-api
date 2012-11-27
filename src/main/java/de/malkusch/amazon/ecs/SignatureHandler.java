@@ -39,8 +39,7 @@ import de.malkusch.amazon.ecs.configuration.Authentication;
  * 
  * This class is thread safe.
  * 
- * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/
- *      NotUsingWSSecurity.html
+ * @see http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/NotUsingWSSecurity.html
  * @author Markus Malkusch <markus@malkusch.de>
  */
 public class SignatureHandler implements SOAPHandler<SOAPMessageContext> {
