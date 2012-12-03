@@ -67,6 +67,7 @@ a bit more convenient API.
 
 # Maven
 You find this package in my maven repository: http://mvn.malkusch.de
+
     \<repositories>
         \<repository>
             \<id>malkusch.de</id>
@@ -75,6 +76,7 @@ You find this package in my maven repository: http://mvn.malkusch.de
     \</repositories>
 
 Add the following dependency to your pom.xml
+
     \<dependency>
         \<groupId>de.malkusch.amazon.product-advertising-api</groupId>
         \<artifactId>amazon-ecs-api</artifactId>
