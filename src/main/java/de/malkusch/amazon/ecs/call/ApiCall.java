@@ -10,8 +10,8 @@ import com.ECS.client.jax.OperationRequest;
 import com.ECS.client.jax.Request;
 
 import de.malkusch.amazon.ecs.InterfaceDecorator;
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
-import de.malkusch.amazon.ecs.ProductAvertisingAPI.Boolean;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI.Boolean;
 import de.malkusch.amazon.ecs.exception.RequestException;
 
 /**
@@ -19,7 +19,7 @@ import de.malkusch.amazon.ecs.exception.RequestException;
  */
 abstract public class ApiCall<CallType, RequestType, ResultType> {
 
-	protected ProductAvertisingAPI api;
+	protected ProductAdvertisingAPI api;
 
 	private Class<CallType> callClass;
 
@@ -27,7 +27,7 @@ abstract public class ApiCall<CallType, RequestType, ResultType> {
 			Holder<OperationRequest> operationRequest,
 			Holder<List<ResultType>> result);
 
-	public ApiCall(ProductAvertisingAPI api, Class<CallType> callClass) {
+	public ApiCall(ProductAdvertisingAPI api, Class<CallType> callClass) {
 		this.api = api;
 		this.callClass = callClass;
 	}

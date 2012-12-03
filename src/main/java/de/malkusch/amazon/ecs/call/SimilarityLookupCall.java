@@ -9,12 +9,12 @@ import com.ECS.client.jax.OperationRequest;
 import com.ECS.client.jax.SimilarityLookup;
 import com.ECS.client.jax.SimilarityLookupRequest;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 
 public class SimilarityLookupCall extends
 		ItemCall<SimilarityLookup, SimilarityLookupRequest> {
 
-	public SimilarityLookupCall(ProductAvertisingAPI api) {
+	public SimilarityLookupCall(ProductAdvertisingAPI api) {
 		super(api, SimilarityLookup.class);
 	}
 

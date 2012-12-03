@@ -9,11 +9,11 @@ import com.ECS.client.jax.CartModify;
 import com.ECS.client.jax.CartModifyRequest;
 import com.ECS.client.jax.OperationRequest;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 
 public class CartModifyCall extends CartCall<CartModify, CartModifyRequest> {
 
-	public CartModifyCall(ProductAvertisingAPI api) {
+	public CartModifyCall(ProductAdvertisingAPI api) {
 		super(api, CartModify.class, CartModifyRequest.class);
 	}
 

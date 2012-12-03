@@ -9,11 +9,11 @@ import com.ECS.client.jax.ItemLookupRequest;
 import com.ECS.client.jax.Items;
 import com.ECS.client.jax.OperationRequest;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 
 public class ItemLookupCall extends ItemCall<ItemLookup, ItemLookupRequest> {
 
-	public ItemLookupCall(ProductAvertisingAPI api) {
+	public ItemLookupCall(ProductAdvertisingAPI api) {
 		super(api, ItemLookup.class);
 	}
 

@@ -9,12 +9,12 @@ import com.ECS.client.jax.CartClear;
 import com.ECS.client.jax.CartClearRequest;
 import com.ECS.client.jax.OperationRequest;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 import de.malkusch.amazon.ecs.exception.RequestException;
 
 public class CartClearCall extends CartCall<CartClear, CartClearRequest> {
 
-	public CartClearCall(ProductAvertisingAPI api) {
+	public CartClearCall(ProductAdvertisingAPI api) {
 		super(api, CartClear.class, CartClearRequest.class);
 	}
 

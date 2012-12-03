@@ -9,12 +9,12 @@ import com.ECS.client.jax.BrowseNodeLookupRequest;
 import com.ECS.client.jax.BrowseNodes;
 import com.ECS.client.jax.OperationRequest;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 
 public class BrowseNodeLookupCall extends
 		ApiCall<BrowseNodeLookup, BrowseNodeLookupRequest, BrowseNodes> {
 
-	public BrowseNodeLookupCall(ProductAvertisingAPI api) {
+	public BrowseNodeLookupCall(ProductAdvertisingAPI api) {
 		super(api, BrowseNodeLookup.class);
 	}
 

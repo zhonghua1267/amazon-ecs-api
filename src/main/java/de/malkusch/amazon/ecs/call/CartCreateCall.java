@@ -9,12 +9,12 @@ import com.ECS.client.jax.CartCreate;
 import com.ECS.client.jax.CartCreateRequest;
 import com.ECS.client.jax.OperationRequest;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 
 public class CartCreateCall extends
 		ApiCall<CartCreate, CartCreateRequest, Cart> {
 
-	public CartCreateCall(ProductAvertisingAPI api) {
+	public CartCreateCall(ProductAdvertisingAPI api) {
 		super(api, CartCreate.class);
 	}
 

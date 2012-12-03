@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.malkusch.amazon.product-advertising-api</groupId>
 	<artifactId>amazon-ecs-api</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>Amazon's Product Advertising API</name>
 	<description>Amazon's Product Advertising API</description>
 	<packaging>jar</packaging>

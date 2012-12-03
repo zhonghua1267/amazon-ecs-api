@@ -9,12 +9,12 @@ import com.ECS.client.jax.CartGet;
 import com.ECS.client.jax.CartGetRequest;
 import com.ECS.client.jax.OperationRequest;
 
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 import de.malkusch.amazon.ecs.exception.RequestException;
 
 public class CartGetCall extends CartCall<CartGet, CartGetRequest> {
 
-	public CartGetCall(ProductAvertisingAPI api) {
+	public CartGetCall(ProductAdvertisingAPI api) {
 		super(api, CartGet.class, CartGetRequest.class);
 	}
 

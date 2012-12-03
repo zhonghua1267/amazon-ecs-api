@@ -3,14 +3,14 @@ package de.malkusch.amazon.ecs.call;
 import com.ECS.client.jax.Cart;
 
 import de.malkusch.amazon.ecs.InterfaceDecorator;
-import de.malkusch.amazon.ecs.ProductAvertisingAPI;
+import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 
 public abstract class CartCall<CallType, RequestType> extends
 		ApiCall<CallType, RequestType, Cart> {
 
 	private Class<RequestType> requestClass;
 
-	public CartCall(ProductAvertisingAPI api, Class<CallType> callClass,
+	public CartCall(ProductAdvertisingAPI api, Class<CallType> callClass,
 			Class<RequestType> requestClass) {
 		super(api, callClass);
 
