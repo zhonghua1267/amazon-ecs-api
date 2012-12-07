@@ -12,6 +12,7 @@ import com.ECS.client.jax.Request;
 import de.malkusch.amazon.ecs.InterfaceDecorator;
 import de.malkusch.amazon.ecs.ProductAdvertisingAPI;
 import de.malkusch.amazon.ecs.ProductAdvertisingAPI.Boolean;
+import de.malkusch.amazon.ecs.exception.RequestErrorException;
 import de.malkusch.amazon.ecs.exception.RequestException;
 
 /**
@@ -76,16 +77,18 @@ abstract public class ApiCall<CallType, RequestType, ResultType> {
 	private void validateResponse(Request request) throws RequestException {
 		Errors errors = request.getErrors();
 		if (errors != null && errors.getError() != null) {
-			StringBuffer errorMessages = new StringBuffer();
+			RequestErrorException exception = null;
 			for (Error error : errors.getError()) {
-				errorMessages.append(error.getMessage()).append('\n');
+				exception = new RequestErrorException(error, exception);
 
 			}
-			throw new RequestException(errorMessages.toString());
-
+			if (exception != null) {
+				throw exception;
+				
+			}
 		}
 		if (request.getIsValid().equals(Boolean.FALSE)) {
-			throw new RequestException();
+			throw new RequestException("Request was invalid");
 
 		}
 	}
