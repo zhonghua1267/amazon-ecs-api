@@ -1,8 +1,12 @@
 package de.malkusch.amazon.ecs;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
+import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.MessageContext;
 
 import com.ECS.client.jax.AWSECommerceService;
 import com.ECS.client.jax.AWSECommerceServicePortType;
@@ -141,8 +145,18 @@ public class ProductAdvertisingAPI {
 		this.configuration = configuration;
 		this.port = port;
 
-		new SignatureHandler(configuration)
-				.appendHandler(((BindingProvider) port));
+		appendHandler(new SignatureHandler(configuration));
+	}
+	
+	/**
+	 * Appends a soap handler
+	 */
+	public void appendHandler(Handler<? extends MessageContext> handler) {
+		Binding binding = ((BindingProvider) port).getBinding();
+		@SuppressWarnings("rawtypes")
+		List<Handler> handlerList = binding.getHandlerChain();
+		handlerList.add(handler);
+		binding.setHandlerChain(handlerList);
 	}
 
 	/**
