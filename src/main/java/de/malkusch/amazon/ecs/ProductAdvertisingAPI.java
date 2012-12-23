@@ -152,10 +152,30 @@ public class ProductAdvertisingAPI {
 	 * Appends a soap handler
 	 */
 	public void appendHandler(Handler<? extends MessageContext> handler) {
+		addHandler(null, handler);
+	}
+	
+	/**
+	 * Prepends a soap handler
+	 */
+	public void prependHandler(Handler<? extends MessageContext> handler) {
+		addHandler(0, handler);
+	}
+	
+	/**
+	 * Prepends a soap handler
+	 */
+	private void addHandler(Integer index, Handler<? extends MessageContext> handler) {
 		Binding binding = ((BindingProvider) port).getBinding();
 		@SuppressWarnings("rawtypes")
 		List<Handler> handlerList = binding.getHandlerChain();
-		handlerList.add(handler);
+		if (index == null) {
+			handlerList.add(handler); 
+			
+		} else {
+			handlerList.add(index, handler);
+			
+		}
 		binding.setHandlerChain(handlerList);
 	}
 
