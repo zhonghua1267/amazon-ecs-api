@@ -42,17 +42,6 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<releaseProfiles>noTest</releaseProfiles>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 	<profiles>
 		<profile>
 			<id>noTest</id>

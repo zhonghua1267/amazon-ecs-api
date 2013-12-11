@@ -82,6 +82,6 @@ You find this package in Maven Central:
 <dependency>
     <groupId>de.malkusch.amazon.product-advertising-api</groupId>
     <artifactId>amazon-ecs-api</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
