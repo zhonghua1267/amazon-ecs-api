@@ -77,23 +77,11 @@ cart = api.getCartClear().call(cart);
     
 
 # Maven
-You find this package in my maven repository: http://mvn.malkusch.de
-
-```xml
-<repositories>
-    <repository>
-        <id>malkusch.de</id>
-        <url>http://mvn.malkusch.de/</url>
-    </repository>
-</repositories>
-```
-
-Add the following dependency to your pom.xml
-
+You find this package in Maven Central:
 ```xml
 <dependency>
     <groupId>de.malkusch.amazon.product-advertising-api</groupId>
     <artifactId>amazon-ecs-api</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.1</version>
 </dependency>
 ```
