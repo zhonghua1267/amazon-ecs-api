@@ -287,7 +287,7 @@ public class TestAPI extends AbstractTest {
 		api.getSimilarityLookup().call(lookup);
 	}
 
-	@Test()
+	@Test
 	public void testSimilarityLookup() throws RequestException {
 		SimilarityLookupRequest lookup = new SimilarityLookupRequest();
 		lookup.getItemId().add("383102037X");
