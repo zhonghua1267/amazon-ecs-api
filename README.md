@@ -94,3 +94,15 @@ You find this package in Maven Central:
     <version>1.1.2</version>
 </dependency>
 ```
+
+
+# License and author
+
+Markus Malkusch <markus@malkusch.de> is the author of this project. This project is free and under the WTFPL.
+
+## Donations
+
+If you like this project and feel generous donate a few Bitcoins here:
+[1335STSwu9hST4vcMRppEPgENMHD2r1REK](bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK)
+
+
